@@ -1,0 +1,20 @@
+.book-detail {
+
+  &-card {
+    width: 350px;
+    margin: 50px auto;
+    background-size: cover;
+    background: url('../../../../assets/img/card_bg.jpg') top;
+  }
+
+  &-characters {
+    cursor: pointer;
+    text-decoration: underline;
+
+    &-list {
+      list-style: none;
+      padding: 0;
+      font-weight: bold;
+    }
+  }
+}
