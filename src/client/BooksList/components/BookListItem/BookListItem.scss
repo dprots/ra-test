@@ -1,0 +1,14 @@
+.book-list {
+
+  &-card {
+    min-width: 300px;
+    margin: 3px;
+    cursor: pointer;
+    background-size: cover;
+    background: url('../../../../assets/img/card_bg.jpg') top;
+  }
+
+  &-link {
+    text-decoration: none;
+  }
+}

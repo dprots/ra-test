@@ -3,5 +3,4 @@ export interface BookInterface {
   name: string;
   authors: string[];
   numberOfPages: number;
-  povCharacters: string[];
 }

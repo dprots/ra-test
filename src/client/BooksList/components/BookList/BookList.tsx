@@ -1,14 +1,11 @@
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {fetchData} from '../../../../store/reducer';
+import BookListItem from '../BookListItem';
 
 import './BookList.scss';
-
-
+import {getAllBooks} from '../../../../store/actions';
 
 const BookList = () => {
 
@@ -17,31 +14,21 @@ const BookList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchData('/books'))
-  }, [dispatch]);
-
-  const handleClick = (charLinks:[]) => {
-    console.log(charLinks)
-    // dispatch(fetchData(`/books/${id}`))
-  }
-
-
-  const bookListElement = loading ? <CircularProgress disableShrink/> : books.map((book: any, index:number) => (
-    <Card onClick={() => handleClick(book.povCharacters)} key={index} className='card' variant='outlined'>
-      <CardContent>
-        <h3>{book.name}</h3>
-        <p>{book.authors.join(', ')}</p>
-        <p><em>pages: {book.numberOfPages}</em></p>
-      </CardContent>
-    </Card>
-  ))
-
+    if (books.length === 0) {
+      dispatch(getAllBooks())
+    }
+  }, [dispatch, books.length]);
+  
+  const bookListElement = loading ? <CircularProgress disableShrink/> :
+    books.map((book: any, index: number) =>
+      <BookListItem key={index} {...book} />
+    )
 
   return (
     <div className="book-list-container">
       {bookListElement}
     </div>
   );
-};
+}
 
 export default BookList;

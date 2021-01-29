@@ -1,12 +1,10 @@
 import React from 'react';
-
-import './BookDetailPage.scss';
+import BookDetail from '../../components/BookDetail';
 
 const BookDetailPage = () => {
+  
   return (
-    <div>
-      
-    </div>
+    <BookDetail />
   );
 };
 
