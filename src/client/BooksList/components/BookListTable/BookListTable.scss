@@ -1,0 +1,38 @@
+//.book-list-table {
+//  margin: 50px auto;
+//  background-size: cover;
+//  background: url('../../../../assets/img/card_bg.jpg') top;
+//  padding: 10px;
+//  min-width: 350px;
+//}
+
+table {
+  border-spacing: 0;
+  border: 1px solid black;
+  margin: 50px auto;
+  background-size: cover;
+  background: url('../../../../assets/img/card_bg.jpg') top;
+  padding: 10px;
+  min-width: 350px;
+
+}
+
+tr {
+    &:last-child {
+      td {
+        border-bottom: 0;
+      }
+    }
+  }
+
+  th,
+  td {
+    margin: 0;
+    padding: 0.5rem;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
