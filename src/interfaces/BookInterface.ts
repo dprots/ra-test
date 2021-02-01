@@ -3,4 +3,6 @@ export interface BookInterface {
   name: string;
   authors: string[];
   numberOfPages: number;
+  publisher: string;
+  mediaType: string;
 }
