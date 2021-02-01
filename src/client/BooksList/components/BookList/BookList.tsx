@@ -6,6 +6,7 @@ import BookListItem from '../BookListItem';
 
 import './BookList.scss';
 import {getAllBooks} from '../../../../store/actions';
+import SwitchView from '../SwitchView';
 
 const BookList = () => {
 
@@ -18,14 +19,15 @@ const BookList = () => {
       dispatch(getAllBooks())
     }
   }, [dispatch, books.length]);
-  
-  const bookListElement = loading ? <CircularProgress disableShrink/> :
+
+  const bookListElement: JSX.Element = loading ? <CircularProgress disableShrink/> :
     books.map((book: any, index: number) =>
       <BookListItem key={index} {...book} />
     )
 
   return (
     <div className="book-list-container">
+      <SwitchView/>
       {bookListElement}
     </div>
   );

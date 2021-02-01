@@ -5,6 +5,7 @@ import {useTable, useExpanded} from 'react-table';
 
 import './BookListTable.scss';
 import {getAllBooks} from '../../../../store/actions';
+import SwitchView from '../SwitchView';
 
 const BookListTable = () => {
 
@@ -21,42 +22,28 @@ const BookListTable = () => {
   const columns = React.useMemo(
     () => [
       {
-        // Build our expander column
-        id: 'expander', // Make sure it has an ID
-        Header: ({getToggleAllRowsExpandedProps, isAllRowsExpanded}: any) => (
-          <span {...getToggleAllRowsExpandedProps()}>
-            {isAllRowsExpanded ? '👇' : '👉'}
+        Header: () => null, // No header
+        id: 'expander', // It needs an ID
+        Cell: ({row}: any) => (
+          // Use Cell to render an expander for each row.
+          // We can use the getToggleRowExpandedProps prop-getter
+          // to build the expander.
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? '👇' : '👉'}
           </span>
         ),
-        Cell: ({row}: any) =>
-          // Use the row.canExpand and row.getToggleRowExpandedProps prop getter
-          // to build the toggle for expanding a row
-          row.canExpand ? (
-            <span
-              {...row.getToggleRowExpandedProps({
-                style: {
-                  // We can even use the row.depth property
-                  // and paddingLeft to indicate the depth
-                  // of the row
-                  paddingLeft: `${row.depth * 2}rem`,
-                },
-              })}
-            >
-              {row.isExpanded ? '👇' : '👉'}
-            </span>
-          ) : null,
       },
       {
         Header: 'Name',
-        accessor: 'col1'
+        accessor: 'name'
       },
       {
         Header: 'Authors',
-        accessor: 'col2'
+        accessor: 'authors'
       },
       {
         Header: 'Pages',
-        accessor: 'col3'
+        accessor: 'numberOfPages'
       },
     ],
     []
@@ -65,28 +52,26 @@ const BookListTable = () => {
   const data = books.map((book: {}) => {
     const {name, authors, numberOfPages}: any = book;
     return ({
-      col1: name,
-      col2: authors.toString(),
-      col3: numberOfPages
+      name,
+      authors: authors.toString(),
+      numberOfPages
     })
   })
 
-
-  function Table({columns: userColumns, data}: any) {
+  function Table({columns: userColumns, data, renderRowSubComponent}: any) {
     const {
       getTableProps,
       getTableBodyProps,
       headerGroups,
       rows,
       prepareRow,
-      //@ts-ignore
-      state: {expanded},
+      visibleColumns,
     } = useTable(
       {
         columns: userColumns,
         data,
       },
-      useExpanded // Use the useExpanded plugin hook
+      useExpanded
     )
 
     return (
@@ -105,30 +90,59 @@ const BookListTable = () => {
           {rows.map((row, i) => {
             prepareRow(row)
             return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                })}
-              </tr>
+              <React.Fragment {...row.getRowProps()}>
+                <tr>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    )
+                  })}
+                </tr>
+                {row
+                  //@ts-ignore
+                  .isExpanded ? (
+                  <tr>
+                    <td colSpan={visibleColumns.length}>
+                      {renderRowSubComponent({row})}
+                    </td>
+                  </tr>
+                ) : null}
+              </React.Fragment>
             )
           })}
           </tbody>
         </table>
-        <br/>
-        <div>Showing the first 20 results of {rows.length} rows</div>
-        <pre>
-        <code>{JSON.stringify({expanded: expanded}, null, 2)}</code>
-      </pre>
       </>
     )
   }
 
+
+  const renderRowSubComponent = React.useCallback(
+    ({row}) => {
+      const index = books.findIndex((item: any) => item.name === row.values.name)
+      return (
+        <>
+          <p>Publisher: {books[index].publisher}</p>
+          <p>Media type: {books[index].mediaType}</p>
+        </>
+      )
+    },
+    [books]
+  )
+
+  const tableElement: JSX.Element = loading ? <CircularProgress disableShrink/> :
+    <Table
+      columns={columns}
+      data={data}
+      renderRowSubComponent={renderRowSubComponent}
+    />
+
   return (
     <>
-      {/*loading ? <CircularProgress disableShrink/> :*/}
-      <Table columns={columns} data={data}/>
+      <SwitchView/>
+      {tableElement}
     </>
   )
-}
+};
 
 export default BookListTable;
